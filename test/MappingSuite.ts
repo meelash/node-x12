@@ -51,4 +51,22 @@ describe('X12Mapping', () => {
       throw new Error('An error occured when mapping an object to a transaction.')
     }
   })
+  it('should return null for nonexistent values when using FOREACH', () => {
+    const parser = new X12Parser()
+    const interchange = parser.parse(edi) as X12Interchange
+    const transaction = interchange.functionalGroups[0].transactions[0]
+
+    const mapper1 = new X12TransactionMap({ TestKey: 'PR03' }, transaction)
+    const wOutFOREACH = mapper1.toObject()
+
+    const mapper2 = new X12TransactionMap({ TestFOREACH: 'FOREACH(PO1)=>PO102', TestKey: 'PR03' }, transaction)
+    const wFOREACHFirst = mapper2.toObject()
+
+    const mapper3 = new X12TransactionMap({ TestKey: 'PR03', TestFOREACH: 'FOREACH(PO1)=>PO102' }, transaction)
+    const wFOREACHAfter = mapper3.toObject()
+
+    if (wOutFOREACH.TestKey !== wFOREACHFirst.TestKey || wFOREACHFirst.TestKey !== wFOREACHAfter.TestKey) {
+      throw new Error('Got different result based on location of FOREACH. Expected the same result no matter what.')
+    }
+  })
 })
