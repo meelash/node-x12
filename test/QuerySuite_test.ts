@@ -41,6 +41,19 @@ describe("X12QueryEngine", () => {
     }
   });
 
+  it("should handle hyphenated qualifiers values", () => {
+    const edi = Deno.readTextFileSync("test/test-data/850.edi");
+    const parser = new X12Parser(true);
+    const engine = new X12QueryEngine(parser);
+    const results = engine.query(edi, 'PO102:PO107["065374-118"]');
+
+    console.log(results.length);
+
+    if (results.length !== 1) {
+      throw new Error('Expected one matching elements for PO102:PO107["065374-118"].');
+    }
+  });
+
   it("should handle HL path element references", () => {
     const edi = Deno.readTextFileSync("test/test-data/856.edi");
     const parser = new X12Parser(true);
