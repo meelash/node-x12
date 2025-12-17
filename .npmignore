@@ -1,4 +1,4 @@
-src/
+/src/
 esm/test/CoreSuite_test.js
 script/test/CoreSuite_test.js
 types/test/CoreSuite_test.d.ts
