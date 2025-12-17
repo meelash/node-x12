@@ -641,7 +641,7 @@ export class X12Parser extends Transform {
    * @description Flush method for Node API Transform stream.
    * @param {Function} callback - Callback to execute when finished.
    */
-  public _flush(callback: Function): void {
+  public override _flush(callback: Function): void {
     this._flushing = true;
     this._consumeChunk(this._dataCache);
     this._flushing = false;
@@ -657,7 +657,7 @@ export class X12Parser extends Transform {
    * @param {string} encoding - Chunk enoding.
    * @param {Function} callback - Callback signalling chunk is processed and instance is ready for next chunk.
    */
-  public _transform(chunk: any, _encoding: string, callback: Function): void {
+  public override _transform(chunk: any, _encoding: string, callback: Function): void {
     this._consumeChunk(this._decoder.write(chunk));
 
     callback();

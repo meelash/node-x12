@@ -93,7 +93,7 @@ describe("X12Parser", () => {
       error = err;
     }
 
-    if (error.name !== "ArgumentNullError") {
+    if ((error as Error).name !== "ArgumentNullError") {
       throw new Error(
         "ArgumentNullError expected when first argument to X12Parser.parse() is undefined.",
       );
@@ -110,7 +110,7 @@ describe("X12Parser", () => {
       error = err;
     }
 
-    if (error.name !== "ParserError") {
+    if ((error as Error).name !== "ParserError") {
       throw new Error(
         "ParserError expected when document length is too short and parser is strict.",
       );
@@ -128,7 +128,7 @@ describe("X12Parser", () => {
       error = err;
     }
 
-    if (error.name !== "ParserError") {
+    if ((error as Error).name !== "ParserError") {
       throw new Error(
         "ParserError expected when elementDelimiter in document does not match and parser is strict.",
       );

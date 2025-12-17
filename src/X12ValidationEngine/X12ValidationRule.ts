@@ -136,7 +136,7 @@ export class X12InterchangeRule extends X12ValidationRule {
   header: X12SegmentRule;
   trailer: X12SegmentRule;
 
-  assert?(interchange: X12Interchange): true | ValidationReport {
+  override assert?(interchange: X12Interchange): true | ValidationReport {
     const report: ValidationReport = {};
     const headerResult = this.header.assert?.(interchange.header);
     let pass = true;
@@ -222,7 +222,7 @@ export class X12GroupRule extends X12ValidationRule {
   header: X12SegmentRule;
   trailer: X12SegmentRule;
 
-  assert?(
+  override assert?(
     group: X12FunctionalGroup,
     controlNumber: number,
   ): true | ValidationReport {
@@ -336,7 +336,7 @@ export class X12TransactionRule extends X12ValidationRule {
   header: X12SegmentRule;
   trailer: X12SegmentRule;
 
-  assert?(
+  override assert?(
     transaction: X12Transaction,
     controlNumber: number,
   ): true | ValidationReport {
@@ -504,7 +504,7 @@ export class X12SegmentRule extends X12ValidationRule {
   loopEnd?: boolean;
   mandatory?: boolean;
 
-  assert?(segment: X12Segment, position = 1): true | ValidationReport {
+  override assert?(segment: X12Segment, position = 1): true | ValidationReport {
     const errors: ValidationError[] = [];
     const elements: ValidationError[] = [];
 
@@ -587,7 +587,7 @@ export class X12ElementRule extends X12ValidationRule {
     | "gs01"
     | "st01";
 
-  assert?(element: X12Element, position?: number): true | ValidationReport {
+  override assert?(element: X12Element, position?: number): true | ValidationReport {
     if (this.skip) return true;
     if (typeof element === "undefined") {
       return { elements: [errorLookup(this.ruleType, "2", position, "")] };

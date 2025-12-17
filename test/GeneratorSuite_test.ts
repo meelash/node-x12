@@ -76,7 +76,7 @@ describe("X12Generator", () => {
     try {
       t.setHeader([...fileEdi[2].split("*").slice(1), "N"]);
     } catch (err) {
-      error = err.message;
+      error = (err as Error).message;
     }
 
     if (
@@ -166,7 +166,7 @@ describe("X12Generator", () => {
       const generator = new X12Generator(JSON.parse(json), options);
       generator.toString();
     } catch (err) {
-      error = err.message;
+      error = (err as Error).message;
     }
 
     if (

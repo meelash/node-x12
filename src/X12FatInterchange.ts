@@ -38,7 +38,7 @@ export class X12FatInterchange extends Array<X12Interchange> {
    * @param {X12SerializationOptions} [options] - Options to override serializing back to EDI.
    * @returns {string} This fat interchange converted to EDI string.
    */
-  toString(options?: X12SerializationOptions): string {
+  override toString(options?: X12SerializationOptions): string {
     options = options !== undefined
       ? defaultSerializationOptions(options)
       : this.options;

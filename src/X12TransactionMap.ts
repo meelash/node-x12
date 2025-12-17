@@ -214,8 +214,9 @@ export class X12TransactionMap {
                 newArray.push(this.helper(key, result.value, query, callback));
               }
             } catch (err) {
+              const message = err instanceof Error ? err.message : String(err);
               throw new QuerySyntaxError(
-                `${err.message}; bad query in ${map[key]}`,
+                `${message}; bad query in ${map[key]}`,
               );
             }
           });
@@ -259,8 +260,9 @@ export class X12TransactionMap {
               clone[key] = this.helper(key, result.value, map[key], callback);
             }
           } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
             throw new QuerySyntaxError(
-              `${err.message}; bad query in ${map[key]}`,
+              `${message}; bad query in ${map[key]}`,
             );
           }
         } else {

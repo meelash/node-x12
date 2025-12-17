@@ -140,7 +140,7 @@ describe("X12ValidationEngine", () => {
     try {
       validator.assert(interchange, rule);
     } catch (error) {
-      const { report } = error;
+      const { report } = error as Error & { report: any };
 
       assert.strictEqual(typeof report, "object");
     }
