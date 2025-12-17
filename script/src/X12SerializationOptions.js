@@ -1,0 +1,103 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.defaultSerializationOptions = exports.X12SerializationOptions = void 0;
+const X12SegmentHeader_js_1 = require("./X12SegmentHeader.js");
+/**
+ * @description Options for serializing to and from EDI.
+ * @typedef {object} X12SerializationOptions
+ * @property {string} [elementDelimiter=*] The separator for elements within an EDI segment.
+ * @property {string} [endOfLine=\n] The end of line charactor for formatting.
+ * @property {boolean} [format=false] A flag to set formatting when serializing back to EDI.
+ * @property {string} [segmentTerminator=~] The terminator for each EDI segment.
+ * @property {string} [subElementDelimiter=>] A sub-element separator; typically found at element 16 of the ISA header segment.
+ * @property {X12SegmentHeader[]} [segmentHeaders] Default array of known, pre-defined segment headers.
+ * @property {'liquidjs'|'internal'} [txEngine='internal'] The engine to use for macros when mapping transaction sets from objects.
+ */
+/**
+ * Class instance wrapper for serialization options.
+ */
+class X12SerializationOptions {
+    constructor(options = {}) {
+        Object.defineProperty(this, "elementDelimiter", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "endOfLine", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "format", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "segmentTerminator", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "subElementDelimiter", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "repetitionDelimiter", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "segmentHeaders", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "txEngine", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        this.elementDelimiter = options.elementDelimiter === undefined
+            ? "*"
+            : options.elementDelimiter;
+        this.endOfLine = options.endOfLine === undefined ? "\n" : options.endOfLine;
+        this.format = options.format === undefined ? false : options.format;
+        this.segmentTerminator = options.segmentTerminator === undefined
+            ? "~"
+            : options.segmentTerminator;
+        this.subElementDelimiter = options.subElementDelimiter === undefined
+            ? ">"
+            : options.subElementDelimiter;
+        this.repetitionDelimiter = options.repetitionDelimiter === undefined
+            ? "^"
+            : options.repetitionDelimiter;
+        this.segmentHeaders = options.segmentHeaders === undefined
+            ? [X12SegmentHeader_js_1.GSSegmentHeader, X12SegmentHeader_js_1.ISASegmentHeader, X12SegmentHeader_js_1.STSegmentHeader]
+            : options.segmentHeaders;
+        this.txEngine = options.txEngine === undefined
+            ? "internal"
+            : options.txEngine;
+        if (this.segmentTerminator === "\n") {
+            this.endOfLine = "";
+        }
+    }
+}
+exports.X12SerializationOptions = X12SerializationOptions;
+/**
+ * @description Set default values for any missing X12SerializationOptions in an options object.
+ * @param {X12SerializationOptions} [options] - Options for serializing to and from EDI.
+ * @returns {X12SerializationOptions} Serialization options with defaults filled in.
+ */
+function defaultSerializationOptions(options) {
+    return new X12SerializationOptions(options);
+}
+exports.defaultSerializationOptions = defaultSerializationOptions;

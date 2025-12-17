@@ -1,0 +1,13 @@
+import type { DescribeOpts, Func, Hook, TestSuite } from "./lib/types.js";
+export declare function describe<T = unknown>(name: string): TestSuite<T>;
+export declare function describe<T = unknown>(options: DescribeOpts<T>): TestSuite<T>;
+export declare function describe<T = unknown>(name: string, fn: () => void): TestSuite<T>;
+export declare function describe<T = unknown>(suite: TestSuite<T>, name: string, fn: () => void): TestSuite<T>;
+export declare function it<T = unknown>(name: string, fn: Func<T>): void;
+export declare function it<T = unknown>(suite: TestSuite<T>, name: string, fn: Func<T>): void;
+export declare function before<T = unknown>(fn: Hook<T>): void;
+export declare function beforeAll<T = unknown>(fn: Hook<T>): void;
+export declare function after<T = unknown>(fn: Hook<T>): void;
+export declare function afterAll<T = unknown>(fn: Hook<T>): void;
+export declare function beforeEach<T = unknown>(fn: Hook<T>): void;
+export declare function afterEach<T = unknown>(fn: Hook<T>): void;

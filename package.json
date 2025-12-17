@@ -1,0 +1,41 @@
+{
+  "module": "./esm/mod.js",
+  "main": "./script/mod.js",
+  "types": "./types/mod.d.ts",
+  "name": "node-x12",
+  "version": "1.8.0-1",
+  "description": "ASC X12 parser, generator, query engine, and mapper; now with support for streams.",
+  "keywords": [
+    "x12",
+    "edi",
+    "ansi",
+    "asc",
+    "ecommerce"
+  ],
+  "homepage": "https://github.com/aaronhuggins/node-x12#readme",
+  "bugs": "https://github.com/aaronhuggins/node-x12/issues",
+  "license": "MIT",
+  "author": "Aaron Huggins <aaron.huggins@runbox.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aaronhuggins/node-x12.git"
+  },
+  "exports": {
+    ".": {
+      "import": "./esm/mod.js",
+      "require": "./script/mod.js",
+      "types": "./types/mod.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "node test_runner.js"
+  },
+  "dependencies": {
+    "liquidjs": "^9.37.0"
+  },
+  "devDependencies": {
+    "@types/node": "16.11.26",
+    "chalk": "4.1.2",
+    "@deno/shim-deno": "~0.4.3"
+  }
+}
