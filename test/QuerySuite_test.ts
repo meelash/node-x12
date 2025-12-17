@@ -41,6 +41,46 @@ describe("X12QueryEngine", () => {
     }
   });
 
+  it("should scope a segment path to the innermost loop", () => {
+    // 835.edi carries an OA adjustment on the claim (CAS*OA*109*-494.94) and one
+    // on each service line (CAS*OA*100 and CAS*OA*45). All three qualify on
+    // CAS01 === "OA", so only the CLP-SVC- path prefix can separate them.
+    //
+    // Note the result is the first service line alone: a multi-part path stops
+    // qualifying at the second SVC and never sees a second CLP to restart from.
+    // A single-part path such as PO1- re-qualifies on every loop.
+    const edi = Deno.readTextFileSync("test/test-data/835.edi");
+    const parser = new X12Parser(true);
+    const engine = new X12QueryEngine(parser);
+    const results = engine.query(edi, 'CLP-SVC-CAS03:CAS01["OA"]');
+    const values = results.map((result) => result.value);
+
+    if (values.includes("-494.94")) {
+      throw new Error(
+        `Expected CLP-SVC-CAS03:CAS01["OA"] to exclude the claim-level adjustment; received ${values.join(", ")}.`,
+      );
+    } else if (values.length !== 1 || values[0] !== "88.80") {
+      throw new Error(
+        `Expected the service line adjustment 88.80; received ${values.join(", ")}.`,
+      );
+    }
+  });
+
+  it("should return every matching segment when there is no segment path", () => {
+    // The same query without the path prefix reaches the claim-level adjustment
+    // too; this is what makes the prefix in the test above load-bearing.
+    const edi = Deno.readTextFileSync("test/test-data/835.edi");
+    const parser = new X12Parser(true);
+    const engine = new X12QueryEngine(parser);
+    const results = engine.query(edi, 'CAS03:CAS01["OA"]');
+
+    if (results.length !== 3) {
+      throw new Error(
+        `Expected three matching elements for CAS03:CAS01["OA"]; received ${results.length}.`,
+      );
+    }
+  });
+
   it("should handle hyphenated qualifiers values", () => {
     const edi = Deno.readTextFileSync("test/test-data/850.edi");
     const parser = new X12Parser(true);
