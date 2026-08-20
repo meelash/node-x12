@@ -1,7 +1,12 @@
 {
+  // Build output. Without this, `deno test` walks npm/ and type-checks dnt's
+  // copied tests, which cannot resolve their shims outside an npm install.
+  "exclude": ["npm", "coverage"],
   "tasks": {
     // Allows shorthand test command with permissions baked in.
-    "test": "deno test --unstable --allow-read --coverage=coverage",
+    // --allow-import is needed for the deno.land test imports; --unstable was
+    // removed in Deno 2 and nothing here needs it.
+    "test": "deno test --allow-read --allow-import --coverage=coverage",
     "lcov": "deno coverage coverage --lcov --output=coverage/report.lcov",
     "cover": "deno task clean && deno task test && deno task lcov && genhtml -o coverage/html coverage/report.lcov",
     // Command to build for npm.
