@@ -61,7 +61,12 @@ class X12QueryEngine {
             reference = concat.query;
         }
         const hlPathMatch = reference.match(/HL\+(\w\+?)+[+-]/g); // ex. HL+O+P+I
-        const segPathMatch = reference.match(/((?<!\+)[A-Z0-9]{2,3}(?:!\d{2}\[)-)+/g); // ex. PO1-N9-
+        // A segment path always precedes the element reference and a qualifier always
+        // follows it, so only search ahead of the first ":". Searching the whole
+        // reference reads a hyphen inside a qualifier value (ex. REF02["SELF-FUNDED"])
+        // as a segment path.
+        const [segPathAndElmRef] = reference.split(":");
+        const segPathMatch = segPathAndElmRef.match(/((?<!\+)[A-Z0-9]{2,3}-)+/g); // ex. PO1-N9-
         const elmRefMatch = reference.match(/[A-Z][A-Z0-9]{1,2}[0-9]{2}[^[]?/g); // ex. REF02; need to remove trailing ":" if exists
         const qualMatch = reference.match(/:[A-Z0-9]{2,3}[0-9]{2,}\[["'][^[\]"']+["']\]/g); // ex. :REF01["PO"]
         const results = new Array();

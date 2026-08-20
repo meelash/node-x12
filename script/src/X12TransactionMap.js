@@ -125,6 +125,21 @@ class X12TransactionMap {
         map = map === undefined ? this._map : map;
         const clone = JSON.parse(JSON.stringify(map));
         let clones = null;
+        // `clone` starts life holding the map's own query strings, and once a FOREACH
+        // key has produced `clones` it is `clones` that gets returned. So a key
+        // resolved after that point has to be written to every row too; writing it to
+        // `clone` alone leaves each row showing the raw query string it was cloned
+        // with. Object values are copied per row so rows never share a reference.
+        const assign = (key, value) => {
+            clone[key] = value;
+            if (Array.isArray(clones)) {
+                clones.forEach((cloned) => {
+                    cloned[key] = value !== null && typeof value === "object"
+                        ? JSON.parse(JSON.stringify(value))
+                        : value;
+                });
+            }
+        };
         const engine = new X12QueryEngine_js_1.X12QueryEngine(false, this._mode);
         const interchange = new X12Interchange_js_1.X12Interchange();
         interchange.setHeader([
@@ -186,13 +201,13 @@ class X12TransactionMap {
                             throw new Errors_js_1.QuerySyntaxError(`${message}; bad query in ${map[key]}`);
                         }
                     });
-                    clone[key] = newArray;
+                    assign(key, newArray);
                 }
                 else if (typeof map[key] === "string") {
                     try {
                         const result = engine.querySingle(interchange, map[key], "");
                         if (result === null) {
-                            clone[key] = null;
+                            assign(key, null);
                         }
                         else if (result.value === null || Array.isArray(clones)) {
                             if (result.value !== null) {
@@ -213,7 +228,7 @@ class X12TransactionMap {
                             }
                         }
                         else {
-                            clone[key] = this.helper(key, result.value, map[key], callback);
+                            assign(key, this.helper(key, result.value, map[key], callback));
                         }
                     }
                     catch (err) {
@@ -222,7 +237,7 @@ class X12TransactionMap {
                     }
                 }
                 else {
-                    clone[key] = this.toObject(map[key]);
+                    assign(key, this.toObject(map[key]));
                 }
             }
         });
