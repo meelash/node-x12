@@ -150,6 +150,22 @@ export class X12TransactionMap {
 
     const clone = JSON.parse(JSON.stringify(map));
     let clones: any = null;
+    // `clone` starts life holding the map's own query strings, and once a FOREACH
+    // key has produced `clones` it is `clones` that gets returned. So a key
+    // resolved after that point has to be written to every row too; writing it to
+    // `clone` alone leaves each row showing the raw query string it was cloned
+    // with. Object values are copied per row so rows never share a reference.
+    const assign = (key: string, value: any): void => {
+      clone[key] = value;
+
+      if (Array.isArray(clones)) {
+        clones.forEach((cloned: any) => {
+          cloned[key] = value !== null && typeof value === "object"
+            ? JSON.parse(JSON.stringify(value))
+            : value;
+        });
+      }
+    };
     const engine = new X12QueryEngine(false, this._mode);
     const interchange = new X12Interchange();
     interchange.setHeader([
@@ -221,13 +237,13 @@ export class X12TransactionMap {
             }
           });
 
-          clone[key] = newArray;
+          assign(key, newArray);
         } else if (typeof map[key] === "string") {
           try {
             const result = engine.querySingle(interchange, map[key], "");
 
             if (result === null) {
-              clone[key] = null;
+              assign(key, null);
             } else if (result.value === null || Array.isArray(clones)) {
               if (result.value !== null) {
                 clones.forEach((cloned: any) => {
@@ -257,7 +273,7 @@ export class X12TransactionMap {
                 });
               }
             } else {
-              clone[key] = this.helper(key, result.value, map[key], callback);
+              assign(key, this.helper(key, result.value, map[key], callback));
             }
           } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
@@ -266,7 +282,7 @@ export class X12TransactionMap {
             );
           }
         } else {
-          clone[key] = this.toObject(map[key]);
+          assign(key, this.toObject(map[key]));
         }
       }
     });
